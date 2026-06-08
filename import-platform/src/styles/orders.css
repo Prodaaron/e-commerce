@@ -1,0 +1,102 @@
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.order-card {
+  background: white;
+
+  padding: 1.5rem;
+
+  border-radius: 16px;
+
+  box-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.order-card-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 1rem;
+}
+
+.order-status {
+  background: #eff6ff;
+
+  color: var(--primary);
+
+  padding: 0.5rem 0.75rem;
+
+  border-radius: 999px;
+
+  font-size: 0.85rem;
+
+  font-weight: 600;
+}
+
+.order-product {
+  margin-bottom: 0.75rem;
+}
+
+.order-delivery {
+  color: var(--muted);
+
+  margin-bottom: 1rem;
+}
+
+.order-link {
+  color: var(--primary);
+
+  font-weight: 600;
+}
+
+.order-timeline {
+  margin-top: 2rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.timeline-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.timeline-indicator {
+  width: 18px;
+  height: 18px;
+
+  border-radius: 50%;
+
+  background: #d1d5db;
+
+  flex-shrink: 0;
+}
+
+.timeline-indicator.completed {
+  background: #22c55e;
+}
+
+.timeline-indicator.active {
+  background: var(--primary);
+}
+
+.timeline-content {
+  padding: 0.75rem 1rem;
+
+  background: white;
+
+  border-radius: 12px;
+
+  width: 100%;
+
+  box-shadow:
+    0 2px 10px rgba(0,0,0,0.05);
+}
