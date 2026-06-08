@@ -16,11 +16,11 @@
   font-weight: 700;
 }
 
-.nav-links {
+.nav-links, .nav-actions, .nav-auth {
   display: flex;
   gap: 2rem;
 }
 
-.nav-links a:hover {
+.nav-links a:hover, .nav-actions a:hover, .nav-auth a:hover {
   color: var(--primary);
 }
