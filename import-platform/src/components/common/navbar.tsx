@@ -1,12 +1,13 @@
 import Link from "next/link";
 import "@/styles/navbar.css";
+import { SITE_NAME } from "@/constants/site";
 
 export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="container navbar-container">
         <div className="logo">
-          ImportHub
+          {SITE_NAME}
         </div>
 
         <div className="nav-links">
