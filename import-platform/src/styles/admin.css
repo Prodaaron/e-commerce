@@ -1,0 +1,74 @@
+.admin-layout {
+  display: flex;
+  min-height: 80vh;
+}
+
+.admin-sidebar {
+  width: 250px;
+
+  background: white;
+
+  border-right: 1px solid var(--border);
+
+  padding: 2rem;
+}
+
+.admin-logo {
+  margin-bottom: 2rem;
+}
+
+.admin-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-nav a {
+  padding: 0.75rem 1rem;
+
+  border-radius: 10px;
+
+  transition: 0.2s;
+}
+
+.admin-nav a:hover {
+  background: #f3f4f6;
+}
+
+.admin-content {
+  flex: 1;
+
+  padding: 2rem;
+}
+
+.admin-stats {
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(220px, 1fr));
+
+  gap: 1.5rem;
+
+  margin-top: 2rem;
+}
+
+.admin-stat-card {
+  background: white;
+
+  padding: 1.5rem;
+
+  border-radius: 16px;
+
+  box-shadow:
+    0 2px 10px rgba(0,0,0,0.05);
+}
+
+.admin-stat-card h3 {
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.admin-stat-card p {
+  font-size: 2rem;
+  font-weight: 700;
+}
