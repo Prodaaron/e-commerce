@@ -1,4 +1,6 @@
 import "@/styles/admin.css";
+import AdminRoute from "@/components/common/AdminRoute";
+
 
 export default function AdminProductsPage() {
   const products = [
@@ -17,43 +19,45 @@ export default function AdminProductsPage() {
   ];
 
   return (
-    <>
-      <div className="admin-page-header">
-        <h1>Products</h1>
+    <AdminRoute>
+      <>
+        <div className="admin-page-header">
+          <h1>Products</h1>
 
-        <button className="admin-primary-button">
-          Add Product
-        </button>
-      </div>
-
-      <div className="admin-table">
-        <div className="admin-table-head">
-          <span>Product</span>
-          <span>Price</span>
-          <span>Status</span>
-          <span>Actions</span>
+          <button className="admin-primary-button">
+            Add Product
+          </button>
         </div>
 
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="admin-table-row"
-          >
-            <span>{product.title}</span>
-
-            <span>
-              {product.price.toLocaleString()} ETB
-            </span>
-
-            <span>{product.status}</span>
-
-            <div className="admin-actions">
-              <button>Edit</button>
-              <button>Change Status</button>
-            </div>
+        <div className="admin-table">
+          <div className="admin-table-head">
+            <span>Product</span>
+            <span>Price</span>
+            <span>Status</span>
+            <span>Actions</span>
           </div>
-        ))}
-      </div>
-    </>
+
+          {products.map((product) => (
+            <div
+              key={product.id}
+              className="admin-table-row"
+            >
+              <span>{product.title}</span>
+
+              <span>
+                {product.price.toLocaleString()} ETB
+              </span>
+
+              <span>{product.status}</span>
+
+              <div className="admin-actions">
+                <button>Edit</button>
+                <button>Change Status</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </> 
+    </AdminRoute>
   );
 }

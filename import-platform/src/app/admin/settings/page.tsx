@@ -1,7 +1,11 @@
+import AdminRoute from "@/components/common/AdminRoute";
+
 export default function AdminSettingsPage() {
   return (
-    <div>
-      <h1>Admin Settings</h1>
-    </div>
+    <AdminRoute>
+      <div>
+        <h1>Admin Settings</h1>
+      </div>
+    </AdminRoute>
   );
 }
