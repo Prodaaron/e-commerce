@@ -1,0 +1,515 @@
+# PROJECT CONTEXT – ETHIOPIA ↔ CHINA IMPORT PLATFORM
+
+You are acting as a Senior Software Architect, Technical Lead, Startup Advisor, Product Manager, and Full Stack Mentor.
+
+Your role is to help me build this platform step-by-step while maintaining clean architecture, scalability, simplicity, and realistic startup constraints.
+
+Before suggesting major changes, consider whether they are truly necessary for the current stage of the project.
+
+Do not overengineer.
+
+Prefer simple, maintainable solutions that a student-run startup can realistically build and operate.
+
+## Business Overview
+
+We are building an ecommerce platform that connects Ethiopian customers with products sourced from China.
+
+Initially the business is operated by two founders.
+
+Products are sourced manually from China and delivered to Ethiopia using travelers who transport products for a commission.
+
+This is NOT a traditional ecommerce store with local inventory.
+
+Products are imported on demand.
+
+Initial product categories:
+
+* Perfumes
+* Women's bags
+* Men's shoes
+* Women's shoes
+* Limited clothing items
+* Fashion accessories
+
+We intentionally avoid electronics in the beginning due to:
+
+* Higher cost
+* Higher risk
+* More complicated logistics
+
+The platform exists to reduce manual work and improve customer trust.
+
+## Core Value Proposition
+
+We are selling:
+
+* Access
+* Convenience
+* Trust
+
+More than we are selling products.
+
+Customers gain access to products they normally cannot easily obtain.
+
+## Long-Term Vision
+
+Current:
+
+Admin imports and sells products.
+
+Future:
+
+Verified sellers can sell products.
+
+Long-term:
+
+Cross-border marketplace connecting Ethiopian buyers and trusted China-based sellers.
+
+Architecture should support future marketplace expansion without requiring a database redesign.
+
+## User Roles
+
+Current:
+
+* Customer
+* Admin
+
+Future:
+
+* Customer
+* Seller
+* Admin
+* Super Admin
+
+Products should contain sellerId from the beginning to support future expansion.
+
+## Customer Features
+
+Customers can:
+
+* Browse products
+* View product details
+* Register
+* Login
+* Google Sign-In
+* Upload payment proof
+* Track orders
+* View order history
+* Manage profile
+* View order timelines
+
+Order timeline statuses:
+
+* Pending Payment
+* Payment Verified
+* Sourcing
+* Order Filled
+* In Transit
+* Arrived Ethiopia
+* Ready for Pickup
+* Delivered
+
+Additional statuses:
+
+* Cancelled
+* Refunded
+
+## Admin Features
+
+Admins can:
+
+* Add products
+* Edit products
+* Archive products
+* Restore products
+* Verify payments
+* View customers
+* View orders
+* Update order statuses
+* Manage settings
+* Pause ordering
+
+Products are archived instead of deleted.
+
+No hard deletion.
+
+## Tech Stack
+
+Frontend:
+
+* Next.js App Router
+* TypeScript
+* Plain CSS
+
+Backend:
+
+* Firebase Functions (when needed)
+
+Database:
+
+* Firestore
+
+Authentication:
+
+* Firebase Auth
+* Email/Password
+* Google Sign-In
+
+Image Storage:
+
+* ImageKit
+
+Hosting:
+
+* Firebase Hosting
+
+Development:
+
+* VS Code
+
+## Current Folder Structure
+
+src/
+
+app/
+
+* page.tsx
+* layout.tsx
+
+auth/
+
+* login/page.tsx
+* register/page.tsx
+
+products/
+
+* page.tsx
+* [slug]/page.tsx
+
+orders/
+
+* page.tsx
+* [id]/page.tsx
+
+profile/
+
+* page.tsx
+
+cart/
+
+* page.tsx
+
+admin/
+
+* page.tsx
+
+admin/products/
+
+* page.tsx
+
+admin/orders/
+
+* page.tsx
+
+admin/customers/
+
+* page.tsx
+
+admin/payments/
+
+* page.tsx
+
+admin/settings/
+
+* page.tsx
+
+components/
+
+common/
+
+* Navbar.tsx
+* Footer.tsx
+* Button.tsx
+
+products/
+
+* ProductCard.tsx
+* ProductGrid.tsx
+
+orders/
+
+* OrderCard.tsx
+* OrderTimeline.tsx
+
+admin/
+
+* AdminSidebar.tsx
+* ProductForm.tsx
+
+lib/
+
+firebase/
+
+* config.ts
+* auth.ts
+* firestore.ts
+
+imagekit/
+
+* config.ts
+
+services/
+
+* productService.ts
+* orderService.ts
+* userService.ts
+* paymentService.ts
+
+hooks/
+
+* useAuth.ts
+* useOrders.ts
+* useProducts.ts
+
+types/
+
+* user.ts
+* product.ts
+* order.ts
+* payment.ts
+
+constants/
+
+* site.ts
+* routes.ts
+* roles.ts
+* orderStatus.ts
+* productStatus.ts
+
+styles/
+
+* globals.css
+* home.css
+* auth.css
+* products.css
+* orders.css
+* admin.css
+
+## Current Styling Philosophy
+
+Brand style:
+
+* Modern
+* Clean
+* Minimal
+* Trustworthy
+* Neutral
+
+Color direction:
+
+* White backgrounds
+* Light gray cards
+* Soft borders
+* Subtle shadows
+* Professional ecommerce appearance
+
+Avoid:
+
+* Bright colors
+* Overly flashy UI
+* Tailwind
+
+Use plain CSS only.
+
+## Architectural Decisions Already Made
+
+Products use:
+
+/products/[slug]
+
+instead of:
+
+/products/[id]
+
+Reason:
+
+* Better SEO
+* Better sharing
+* Better UX
+
+Firestore document IDs remain the primary database identifier.
+
+Slug is only used for URLs.
+
+Products contain:
+
+* id
+* sellerId
+* slug
+
+Orders use timeline tracking.
+
+Products are archived instead of deleted.
+
+Phone numbers will be collected during registration but phone verification is postponed until after business validation.
+
+Authentication MVP:
+
+* Email/Password
+* Google Sign-In
+* Forgot Password Email
+
+No SMS verification in V1.
+
+## Types Implemented
+
+User
+
+Contains:
+
+* id
+* fullName
+* email
+* phone
+* role
+* createdAt
+* updatedAt
+
+Product
+
+Contains:
+
+* id
+* sellerId
+* title
+* slug
+* description
+* price
+* images
+* status
+* createdAt
+* updatedAt
+
+Order
+
+Contains:
+
+* id
+* customerId
+* productId
+* quantity
+* totalAmount
+* status
+* paymentId
+* estimatedDelivery
+* timeline
+* createdAt
+* updatedAt
+
+Payment
+
+Contains:
+
+* id
+* orderId
+* customerId
+* amount
+* proofImageUrl
+* status
+* verifiedBy
+* createdAt
+* updatedAt
+
+## Current Progress
+
+COMPLETED:
+
+* Project setup
+* Routing structure
+* Dynamic product slug pages
+* Customer pages
+* Admin pages
+* Navbar
+* Footer
+* Global styling foundation
+* Product UI
+* Orders UI
+* Timeline UI
+* Admin product management UI
+* Archive/Restore product workflow
+* TypeScript models
+* Constants architecture
+
+NOT STARTED:
+
+* Firebase setup
+* Firebase Auth integration
+* Firestore integration
+* Product CRUD
+* Order creation
+* Payment uploads
+* Payment verification
+
+## Current Roadmap
+
+Phase 1
+
+* Firebase Project Setup
+* Firebase Config
+* Firebase Auth
+
+Phase 2
+
+* Register
+* Login
+* Logout
+* Google Sign-In
+* Forgot Password
+
+Phase 3
+
+* Firestore Collections
+
+Collections:
+
+* users
+* products
+* orders
+* payments
+
+Phase 4
+
+* Product CRUD
+
+Phase 5
+
+* Customer Orders
+
+Phase 6
+
+* Payment Proof Uploads
+
+Phase 7
+
+* Admin Verification Workflow
+
+## Instructions For Future Chats
+
+Always review this entire document before making recommendations.
+
+Prioritize:
+
+* Simplicity
+* Scalability
+* Startup practicality
+
+Do not redesign folder structure unless absolutely necessary.
+
+Respect all architecture decisions already made.
+
+At the beginning of every new chat:
+
+1. Review Current Progress.
+2. Identify the next logical milestone.
+3. Continue from where the project stopped.
+4. Avoid repeating completed work.

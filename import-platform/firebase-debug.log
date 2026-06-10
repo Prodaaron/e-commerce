@@ -1,0 +1,156 @@
+[debug] [2026-06-10T11:48:32.825Z] ----------------------------------------------------------------------
+[debug] [2026-06-10T11:48:32.830Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2026-06-10T11:48:32.830Z] CLI Version:   15.19.1
+[debug] [2026-06-10T11:48:32.830Z] Platform:      win32
+[debug] [2026-06-10T11:48:32.830Z] Node Version:  v24.11.1
+[debug] [2026-06-10T11:48:32.831Z] Time:          Wed Jun 10 2026 19:48:32 GMT+0800 (China Standard Time)
+[debug] [2026-06-10T11:48:32.831Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-06-10T11:48:32.834Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\Administrator\Documents\Web files\local\e-commerce\import-platform
+
+[debug] [2026-06-10T11:48:36.448Z] *** [apiv2] error from fetch(https://firebase-public.firebaseio.com/cli.json, {"headers":{},"method":"GET"}): FetchError: request to https://firebase-public.firebaseio.com/cli.json failed, reason: read ECONNRESET
+[warn] !  Unable to fetch the CLI MOTD and remote config. This is not a fatal error, but may indicate an issue with your network connection. 
+[debug] [2026-06-10T11:48:36.462Z] Failed to fetch MOTD FirebaseError: Failed to make request to https://firebase-public.firebaseio.com/cli.json
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] 
+[debug] [2026-06-10T11:49:50.888Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-06-10T11:49:50.888Z] > authorizing via signed-in user (prodaaron.m@gmail.com)
+[debug] [2026-06-10T11:49:50.889Z] Checked if tokens are valid: false, expires at: 1778780095828
+[debug] [2026-06-10T11:49:50.890Z] Checked if tokens are valid: false, expires at: 1778780095828
+[debug] [2026-06-10T11:49:50.890Z] > refreshing access token with scopes: []
+[debug] [2026-06-10T11:49:50.891Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-06-10T11:49:50.891Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-06-10T11:50:14.567Z] *** [apiv2] error from fetch(https://www.googleapis.com/oauth2/v3/token, {"headers":{},"method":"POST","body":{"_overheadLength":545,"_valueLength":212,"_valuesToMeasure":[],"writable":false,"readable":true,"dataSize":0,"maxDataSize":2097152,"pauseStreams":true,"_released":true,"_streams":[],"_currentStream":null,"_insideLoop":false,"_pendingNext":false,"_boundary":"--------------------------1c3c700c08b99622ca036340","_events":{},"_eventsCount":1}}): FetchError: request to https://www.googleapis.com/oauth2/v3/token failed, reason: 
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2026-06-10T11:50:14.568Z] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2026-06-10T11:50:14.987Z] FirebaseError: Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+    at invalidCredentialError (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\auth.js:177:12)
+    at refreshTokens (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\auth.js:590:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async getAccessToken (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:52:18)
+    at async Client.addAuthHeader (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:182:21)
+    at async Client.request (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:129:34)
+    at async getProjectPage (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\management\projects.js:287:17)
+    at async getFirebaseProjectPage (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\management\projects.js:304:23)
+    at async selectProjectInteractively (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\management\projects.js:150:41)
+    at async Object.doSetup (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\init\features\project.js:56:24)
+[error] 
+[error] Error: Failed to list Firebase projects. See firebase-debug.log for more info.
+[debug] [2026-06-10T11:54:12.772Z] ----------------------------------------------------------------------
+[debug] [2026-06-10T11:54:12.776Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2026-06-10T11:54:12.777Z] CLI Version:   15.19.1
+[debug] [2026-06-10T11:54:12.777Z] Platform:      win32
+[debug] [2026-06-10T11:54:12.777Z] Node Version:  v24.11.1
+[debug] [2026-06-10T11:54:12.777Z] Time:          Wed Jun 10 2026 19:54:12 GMT+0800 (China Standard Time)
+[debug] [2026-06-10T11:54:12.777Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-06-10T11:54:12.782Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\Administrator\Documents\Web files\local\e-commerce\import-platform
+
+[debug] [2026-06-10T11:54:16.495Z] *** [apiv2] error from fetch(https://firebase-public.firebaseio.com/cli.json, {"headers":{},"method":"GET"}): FetchError: request to https://firebase-public.firebaseio.com/cli.json failed, reason: read ECONNRESET
+[warn] !  Unable to fetch the CLI MOTD and remote config. This is not a fatal error, but may indicate an issue with your network connection. 
+[debug] [2026-06-10T11:54:16.501Z] Failed to fetch MOTD FirebaseError: Failed to make request to https://firebase-public.firebaseio.com/cli.json
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] 
+[debug] [2026-06-10T11:57:53.347Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-06-10T11:57:53.348Z] > authorizing via signed-in user (prodaaron.m@gmail.com)
+[debug] [2026-06-10T11:57:53.349Z] Checked if tokens are valid: false, expires at: 1778780095828
+[debug] [2026-06-10T11:57:53.349Z] Checked if tokens are valid: false, expires at: 1778780095828
+[debug] [2026-06-10T11:57:53.350Z] > refreshing access token with scopes: []
+[debug] [2026-06-10T11:57:53.351Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-06-10T11:57:53.351Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-06-10T11:58:17.057Z] *** [apiv2] error from fetch(https://www.googleapis.com/oauth2/v3/token, {"headers":{},"method":"POST","body":{"_overheadLength":545,"_valueLength":212,"_valuesToMeasure":[],"writable":false,"readable":true,"dataSize":0,"maxDataSize":2097152,"pauseStreams":true,"_released":true,"_streams":[],"_currentStream":null,"_insideLoop":false,"_pendingNext":false,"_boundary":"--------------------------ae2812b332feaaef36e21e27","_events":{},"_eventsCount":1}}): FetchError: request to https://www.googleapis.com/oauth2/v3/token failed, reason: 
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2026-06-10T11:58:17.059Z] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2026-06-10T11:58:17.435Z] FirebaseError: Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+    at invalidCredentialError (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\auth.js:177:12)
+    at refreshTokens (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\auth.js:590:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async getAccessToken (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:52:18)
+    at async Client.addAuthHeader (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:182:21)
+    at async Client.request (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:129:34)
+    at async getProjectPage (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\management\projects.js:287:17)
+    at async getFirebaseProjectPage (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\management\projects.js:304:23)
+    at async selectProjectInteractively (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\management\projects.js:150:41)
+    at async Object.doSetup (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\init\features\project.js:56:24)
+[error] 
+[error] Error: Failed to list Firebase projects. See firebase-debug.log for more info.
+[debug] [2026-06-10T12:03:23.018Z] ----------------------------------------------------------------------
+[debug] [2026-06-10T12:03:23.026Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js projects:list
+[debug] [2026-06-10T12:03:23.027Z] CLI Version:   15.19.1
+[debug] [2026-06-10T12:03:23.027Z] Platform:      win32
+[debug] [2026-06-10T12:03:23.027Z] Node Version:  v24.11.1
+[debug] [2026-06-10T12:03:23.027Z] Time:          Wed Jun 10 2026 20:03:23 GMT+0800 (China Standard Time)
+[debug] [2026-06-10T12:03:23.028Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-06-10T12:03:23.036Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2026-06-10T12:03:23.105Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-06-10T12:03:23.106Z] > authorizing via signed-in user (prodaaron.m@gmail.com)
+[debug] [2026-06-10T12:03:23.111Z] Checked if tokens are valid: false, expires at: 1778780095828
+[debug] [2026-06-10T12:03:23.111Z] Checked if tokens are valid: false, expires at: 1778780095828
+[debug] [2026-06-10T12:03:23.112Z] > refreshing access token with scopes: []
+[debug] [2026-06-10T12:03:23.113Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-06-10T12:03:23.114Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-06-10T12:03:23.724Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2026-06-10T12:03:23.724Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2026-06-10T12:03:46.768Z] *** [apiv2] error from fetch(https://www.googleapis.com/oauth2/v3/token, {"headers":{},"method":"POST","body":{"_overheadLength":545,"_valueLength":212,"_valuesToMeasure":[],"writable":false,"readable":true,"dataSize":0,"maxDataSize":2097152,"pauseStreams":true,"_released":true,"_streams":[],"_currentStream":null,"_insideLoop":false,"_pendingNext":false,"_boundary":"--------------------------16c13a69d15ad3b48408ed4d","_events":{},"_eventsCount":1}}): FetchError: request to https://www.googleapis.com/oauth2/v3/token failed, reason: 
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2026-06-10T12:03:46.771Z] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2026-06-10T12:03:47.064Z] FirebaseError: Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+    at invalidCredentialError (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\auth.js:177:12)
+    at refreshTokens (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\auth.js:590:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async getAccessToken (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:52:18)
+    at async Client.addAuthHeader (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:182:21)
+    at async Client.request (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:129:34)
+    at async getProjectPage (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\management\projects.js:287:17)
+    at async getFirebaseProjectPage (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\management\projects.js:304:23)
+    at async listFirebaseProjects (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\management\projects.js:333:29)
+    at async Command.actionFn (C:\Users\Administrator\AppData\Roaming\npm\node_modules\firebase-tools\lib\commands\projects-list.js:51:20)
+[error] 
+[error] Error: Failed to list Firebase projects. See firebase-debug.log for more info.
