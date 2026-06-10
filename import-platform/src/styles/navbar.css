@@ -24,3 +24,18 @@
 .nav-links a:hover, .nav-actions a:hover, .nav-auth a:hover {
   color: var(--primary);
 }
+
+.nav-user {
+  margin-right: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+.nav-logout {
+  background: black;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
