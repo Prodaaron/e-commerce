@@ -1,5 +1,6 @@
 import "@/styles/orders.css";
 import Link from "next/link";
+import ProtectedRoute from "@/components/common/ProtectedRoute";
 
 export default function OrdersPage() {
   const orders = [
@@ -18,40 +19,42 @@ export default function OrdersPage() {
   ];
 
   return (
-    <div className="container section">
-      <h1 className="page-title">My Orders</h1>
+    <ProtectedRoute>
+      <div className="container section">
+        <h1 className="page-title">My Orders</h1>
 
-      <div className="orders-list">
-        {orders.map((order) => (
-          <div
-            key={order.id}
-            className="order-card"
-          >
-            <div className="order-card-header">
-              <h3>Order #{order.id}</h3>
-
-              <span className="order-status">
-                {order.status}
-              </span>
-            </div>
-
-            <p className="order-product">
-              {order.productName}
-            </p>
-
-            <p className="order-delivery">
-              Expected Delivery: {order.expectedDelivery}
-            </p>
-
-            <Link
-              href={`/orders/${order.id}`}
-              className="order-link"
+        <div className="orders-list">
+          {orders.map((order) => (
+            <div
+              key={order.id}
+              className="order-card"
             >
-              View Details
-            </Link>
-          </div>
-        ))}
+              <div className="order-card-header">
+                <h3>Order #{order.id}</h3>
+
+                <span className="order-status">
+                  {order.status}
+                </span>
+              </div>
+
+              <p className="order-product">
+                {order.productName}
+              </p>
+
+              <p className="order-delivery">
+                Expected Delivery: {order.expectedDelivery}
+              </p>
+
+              <Link
+                href={`/orders/${order.id}`}
+                className="order-link"
+              >
+                View Details
+              </Link>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </ProtectedRoute>
   );
 }

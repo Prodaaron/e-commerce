@@ -1,5 +1,6 @@
 import OrderTimeline from "@/components/orders/OrderTimeline";
 import "@/styles/orders.css";
+import ProtectedRoute from "@/components/common/ProtectedRoute";
 
 export default async function OrderDetailsPage({
   params,
@@ -16,20 +17,22 @@ export default async function OrderDetailsPage({
   };
 
   return (
-    <div className="container section">
-      <h1>Order #{order.id}</h1>
+    <ProtectedRoute>
+      <div className="container section">
+        <h1>Order #{order.id}</h1>
 
-      <p>{order.productName}</p>
+        <p>{order.productName}</p>
 
-      <p>
-        Estimated Delivery:
-        {" "}
-        {order.estimatedDelivery}
-      </p>
+        <p>
+          Estimated Delivery:
+          {" "}
+          {order.estimatedDelivery}
+        </p>
 
-      <OrderTimeline
-        currentStatus={order.status}
-      />
-    </div>
+        <OrderTimeline
+          currentStatus={order.status}
+        />
+      </div>
+    </ProtectedRoute>
   );
 }

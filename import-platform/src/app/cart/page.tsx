@@ -1,4 +1,5 @@
 import "@/styles/cart.css";
+import ProtectedRoute from "@/components/common/ProtectedRoute";
 
 export default function CartPage() {
   const items = [
@@ -22,48 +23,50 @@ export default function CartPage() {
   );
 
   return (
-    <div className="container section">
-      <h1 className="page-title">
-        Shopping Cart
-      </h1>
+    <ProtectedRoute>
+      <div className="container section">
+        <h1 className="page-title">
+          Shopping Cart
+        </h1>
 
-      <div className="cart-layout">
-        <div className="cart-items">
-          {items.map((item) => (
-            <div
-              key={item.id}
-              className="cart-item"
-            >
-              <div>
-                <h3>{item.title}</h3>
+        <div className="cart-layout">
+          <div className="cart-items">
+            {items.map((item) => (
+              <div
+                key={item.id}
+                className="cart-item"
+              >
+                <div>
+                  <h3>{item.title}</h3>
 
-                <p>
-                  Quantity: {item.quantity}
+                  <p>
+                    Quantity: {item.quantity}
+                  </p>
+                </div>
+
+                <p className="cart-price">
+                  {item.price.toLocaleString()} ETB
                 </p>
               </div>
-
-              <p className="cart-price">
-                {item.price.toLocaleString()} ETB
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <div className="cart-summary">
-          <h2>Order Summary</h2>
-
-          <div className="summary-row">
-            <span>Subtotal</span>
-            <span>
-              {subtotal.toLocaleString()} ETB
-            </span>
+            ))}
           </div>
 
-          <button className="buy-button">
-            Proceed to Checkout
-          </button>
+          <div className="cart-summary">
+            <h2>Order Summary</h2>
+
+            <div className="summary-row">
+              <span>Subtotal</span>
+              <span>
+                {subtotal.toLocaleString()} ETB
+              </span>
+            </div>
+
+            <button className="buy-button">
+              Proceed to Checkout
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </ProtectedRoute>
   );
 }
