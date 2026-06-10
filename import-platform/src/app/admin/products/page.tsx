@@ -1,22 +1,11 @@
 import "@/styles/admin.css";
 import AdminRoute from "@/components/common/AdminRoute";
+import { getProducts } from "@/lib/firebase/products";
+import { getAdminProducts } from "@/lib/firebase/products";
+import Link from "next/link";
 
-
-export default function AdminProductsPage() {
-  const products = [
-    {
-      id: 1,
-      title: "Dior Sauvage 100ml",
-      price: 8500,
-      status: "Active",
-    },
-    {
-      id: 2,
-      title: "Nike Air Force 1",
-      price: 7000,
-      status: "Active",
-    },
-  ];
+export default async function AdminProductsPage() {
+  const products = await getAdminProducts();
 
   return (
     <AdminRoute>
@@ -24,9 +13,11 @@ export default function AdminProductsPage() {
         <div className="admin-page-header">
           <h1>Products</h1>
 
-          <button className="admin-primary-button">
-            Add Product
-          </button>
+          <Link href="/admin/products/create">
+            <button className="admin-primary-button">
+              Add Product
+            </button>
+          </Link>
         </div>
 
         <div className="admin-table">
@@ -48,7 +39,9 @@ export default function AdminProductsPage() {
                 {product.price.toLocaleString()} ETB
               </span>
 
-              <span>{product.status}</span>
+              <span>
+                {product.status}
+              </span>
 
               <div className="admin-actions">
                 <button>Edit</button>
@@ -57,7 +50,7 @@ export default function AdminProductsPage() {
             </div>
           ))}
         </div>
-      </> 
+      </>
     </AdminRoute>
   );
 }

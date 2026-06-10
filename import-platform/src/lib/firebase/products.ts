@@ -147,3 +147,9 @@ export async function restoreProduct(id: string) {
     updatedAt: serverTimestamp(),
   });
 }
+
+export async function getAdminProducts(): Promise<Product[]> {
+  const snapshot = await getDocs(collection(db, "products"));
+
+  return snapshot.docs.map(fromFirestore);
+}
