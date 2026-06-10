@@ -1,37 +1,30 @@
 import Link from "next/link";
 import "@/styles/products.css";
+import { Product } from "@/types/product";
 
 interface ProductCardProps {
-  title: string;
-  priceETB: number;
-  image: string;
-  slug: string;
+  product: Product;
 }
 
-export default function ProductCard({
-  title,
-  priceETB,
-  image,
-  slug,
-}: ProductCardProps) {
+export default function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="product-card">
       <img
-        src={image}
-        alt={title}
+        src={product.images?.[0] || "https://via.placeholder.com/250"}
+        alt={product.title}
         className="product-image"
       />
 
       <div className="product-content">
         <h3 className="product-title">
-          {title}
+          {product.title}
         </h3>
 
         <p className="product-price">
-          {priceETB} ETB
+          {product.price} ETB
         </p>
 
-        <Link href={`/products/${slug}`}>
+        <Link href={`/products/${product.slug}`}>
           <button className="product-button">
             View Product
           </button>

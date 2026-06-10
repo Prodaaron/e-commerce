@@ -1,28 +1,24 @@
 import "@/styles/products.css";
+import { getProductBySlug } from "@/lib/firebase/products";
+import { notFound } from "next/navigation";
 
 export default async function ProductDetailsPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
-  const { slug } = await params;
+  const product = await getProductBySlug(params.slug);
 
-  // Temporary dummy data
-  const product = {
-    title: "Dior Sauvage 100ml",
-    priceETB: 8500,
-    description:
-      "Authentic imported fragrance sourced from China. Long-lasting scent suitable for daily and formal use.",
-    image: "https://via.placeholder.com/600x600",
-    estimatedDelivery: "10-18 Days",
-  };
+  if (!product) {
+    return notFound();
+  }
 
   return (
     <div className="container section">
       <div className="product-details">
         <div className="product-details-image">
           <img
-            src={product.image}
+            src={product.images?.[0] || "https://via.placeholder.com/600"}
             alt={product.title}
           />
         </div>
@@ -33,12 +29,11 @@ export default async function ProductDetailsPage({
           </h1>
 
           <p className="product-details-price">
-            {product.priceETB.toLocaleString()} ETB
+            {product.price} ETB
           </p>
 
           <div className="product-delivery">
-            <strong>Estimated Delivery:</strong>{" "}
-            {product.estimatedDelivery}
+            <strong>Estimated Delivery:</strong> 10–18 Days
           </div>
 
           <div className="product-description">
@@ -50,9 +45,9 @@ export default async function ProductDetailsPage({
             Order Now
           </button>
 
-          {/* Temporary for testing */}
+          {/* Debug (keep for now) */}
           <p className="product-slug">
-            Product ID: {slug}
+            Product ID: {product.slug}
           </p>
         </div>
       </div>

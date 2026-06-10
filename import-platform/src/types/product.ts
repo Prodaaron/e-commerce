@@ -1,7 +1,6 @@
-// types/product.ts
-
 export interface Product {
   id: string;
+
   sellerId: string;
 
   title: string;
@@ -13,7 +12,11 @@ export interface Product {
 
   images: string[];
 
+  category: string;
+
   status: "active" | "draft" | "archived";
+
+  featured: boolean;
 
   createdAt: Date;
   updatedAt: Date;

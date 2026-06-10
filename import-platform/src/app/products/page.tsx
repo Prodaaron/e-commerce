@@ -1,12 +1,14 @@
 import ProductGrid from "@/components/products/productGrid";
 import "@/styles/products.css";
+import { getProducts } from "@/lib/firebase/products";
 
+export default async function ProductsPage() {
+  const products = await getProducts();
 
-export default function ProductsPage() {
   return (
     <div>
       <h1>Products</h1>
-      <ProductGrid />
+      <ProductGrid products={products} />
     </div>
   );
 }
