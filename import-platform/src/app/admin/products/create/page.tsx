@@ -1,152 +1,143 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { createProduct } from "@/lib/firebase/products";
+import { useRouter } from "next/navigation";
+import { generateSlug } from "@/utils/generateSlug";
+
 
 export default function CreateProductPage() {
   const router = useRouter();
+
   const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
     title: "",
     slug: "",
     description: "",
-    price: "",
+    price: 0,
+    images: "",
     category: "",
-    image: "",
     featured: false,
+    status: "active" as "active" | "draft",
+    discountType: "none" as "none" | "percent" | "fixed",
+    discountValue: 0,
   });
 
-  function generateSlug(value: string) {
-    return value
-      .toLowerCase()
-      .trim()
-      .replace(/\s+/g, "-")
-      .replace(/[^\w-]+/g, "");
+  function handleChange(e: any) {
+    const { name, value, type, checked } = e.target;
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   }
 
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {
-    const { name, value } = e.target;
-
-    setForm((prev) => {
-      const updated = {
-        ...prev,
-        [name]: value,
-      };
-
-      // auto-generate slug from title
-      if (name === "title") {
-        updated.slug = generateSlug(value);
-      }
-
-      return updated;
-    });
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: any) {
     e.preventDefault();
     setLoading(true);
 
     try {
       await createProduct({
         sellerId: "admin",
-
         title: form.title,
-        slug: form.slug || generateSlug(form.title),
-
+        slug: generateSlug(form.title), 
         description: form.description,
         price: Number(form.price),
-
-        images: form.image ? [form.image] : [],
-
+        images: form.images.split(",").map((img) => img.trim()),
         category: form.category,
         featured: form.featured,
+        status: form.status,
 
-        status: "active",
+        discount:
+          form.discountType === "none"
+            ? undefined
+            : {
+                type: form.discountType,
+                value: Number(form.discountValue),
+              },
       });
 
       router.push("/admin/products");
     } catch (err) {
-      console.error("Failed to create product:", err);
+      console.error(err);
     }
 
     setLoading(false);
   }
 
   return (
-    <div className="admin-form-container">
+    <form onSubmit={handleSubmit} className="admin-form">
       <h1>Create Product</h1>
 
-      <form onSubmit={handleSubmit} className="admin-form">
+      <input
+        name="title"
+        placeholder="Title"
+        onChange={handleChange}
+      />
 
+      <input
+        name="slug"
+        placeholder="Slug"
+        onChange={handleChange}
+      />
+
+      <textarea
+        name="description"
+        placeholder="Description"
+        onChange={handleChange}
+      />
+
+      <input
+        name="price"
+        type="number"
+        placeholder="Price"
+        onChange={handleChange}
+      />
+
+      <input
+        name="images"
+        placeholder="Images (comma separated)"
+        onChange={handleChange}
+      />
+
+      <input
+        name="category"
+        placeholder="Category"
+        onChange={handleChange}
+      />
+
+      {/* DISCOUNT SYSTEM */}
+      <select
+        name="discountType"
+        onChange={handleChange}
+      >
+        <option value="none">No Discount</option>
+        <option value="percent">Percent %</option>
+        <option value="fixed">Fixed Amount</option>
+      </select>
+
+      {form.discountType !== "none" && (
         <input
-          name="title"
-          placeholder="Product Title"
-          value={form.title}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          name="slug"
-          placeholder="Slug (auto-generated)"
-          value={form.slug}
-          onChange={handleChange}
-        />
-
-        <textarea
-          name="description"
-          placeholder="Description"
-          value={form.description}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          name="price"
+          name="discountValue"
           type="number"
-          placeholder="Price"
-          value={form.price}
+          placeholder="Discount Value"
           onChange={handleChange}
-          required
         />
+      )}
 
+      <label>
         <input
-          name="category"
-          placeholder="Category"
-          value={form.category}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          name="image"
-          placeholder="Image URL (temporary)"
-          value={form.image}
+          type="checkbox"
+          name="featured"
           onChange={handleChange}
         />
+        Featured
+      </label>
 
-        <label className="admin-checkbox">
-          <input
-            type="checkbox"
-            checked={form.featured}
-            onChange={(e) =>
-              setForm((prev) => ({
-                ...prev,
-                featured: e.target.checked,
-              }))
-            }
-          />
-          Featured Product
-        </label>
-
-        <button type="submit" disabled={loading}>
-          {loading ? "Creating..." : "Create Product"}
-        </button>
-      </form>
-    </div>
+      <button disabled={loading}>
+        {loading ? "Creating..." : "Create Product"}
+      </button>
+    </form>
   );
 }

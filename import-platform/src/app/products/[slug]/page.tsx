@@ -17,12 +17,39 @@ export default async function ProductDetailsPage({
 
   if (!product) return notFound();
 
+  // -------------------------
+  // DISCOUNT LOGIC
+  // -------------------------
+  const discount = product.discount;
+
+  const hasDiscount =
+    discount !== undefined &&
+    discount !== null &&
+    discount.value > 0;
+
+  let finalPrice = product.price;
+
+  if (hasDiscount) {
+    if (discount.type === "percent") {
+      finalPrice =
+        product.price -
+        (product.price * discount.value) / 100;
+    }
+
+    if (discount.type === "fixed") {
+      finalPrice = product.price - discount.value;
+    }
+  }
+
   return (
     <div className="container section">
       <div className="product-details">
         <div className="product-details-image">
           <img
-            src={product.images?.[0] || "https://via.placeholder.com/600"}
+            src={
+              product.images?.[0] ||
+              "https://via.placeholder.com/600"
+            }
             alt={product.title}
           />
         </div>
@@ -32,9 +59,33 @@ export default async function ProductDetailsPage({
             {product.title}
           </h1>
 
-          <p className="product-details-price">
-            {product.price} ETB
-          </p>
+          {/* DISCOUNT BADGE */}
+          {hasDiscount && (
+            <div className="discount-badge">
+              {discount.type === "percent"
+                ? `-${discount.value}% OFF`
+                : `- ${discount.value} ETB OFF`}
+            </div>
+          )}
+
+          {/* PRICE */}
+          <div className="product-details-price">
+            {hasDiscount ? (
+              <>
+                <span className="old-price">
+                  {product.price.toLocaleString()} ETB
+                </span>
+
+                <span className="new-price">
+                  {finalPrice.toLocaleString()} ETB
+                </span>
+              </>
+            ) : (
+              <span>
+                {product.price.toLocaleString()} ETB
+              </span>
+            )}
+          </div>
 
           <div className="product-delivery">
             <strong>Estimated Delivery:</strong> 10–18 Days

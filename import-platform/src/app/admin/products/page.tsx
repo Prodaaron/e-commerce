@@ -1,8 +1,8 @@
 import "@/styles/admin.css";
 import AdminRoute from "@/components/common/AdminRoute";
-import { getProducts } from "@/lib/firebase/products";
 import { getAdminProducts } from "@/lib/firebase/products";
 import Link from "next/link";
+import ProductActions from "@/components/admin/ProductActions";
 
 export default async function AdminProductsPage() {
   const products = await getAdminProducts();
@@ -28,27 +28,45 @@ export default async function AdminProductsPage() {
             <span>Actions</span>
           </div>
 
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className="admin-table-row"
-            >
-              <span>{product.title}</span>
+          {products.map((product) => {
+            const discount = product.discount;
 
-              <span>
-                {product.price.toLocaleString()} ETB
-              </span>
+            const hasDiscount =
+              discount !== undefined &&
+              discount !== null &&
+              discount.value > 0;
 
-              <span>
-                {product.status}
-              </span>
+            let discountLabel = null;
 
-              <div className="admin-actions">
-                <button>Edit</button>
-                <button>Change Status</button>
+            if (hasDiscount) {
+              discountLabel =
+                discount.type === "percent"
+                  ? `-${discount.value}% OFF`
+                  : `- ${discount.value} ETB OFF`;
+            }
+
+            return (
+              <div key={product.id} className="admin-table-row">
+                <span>
+                  {product.title}
+
+                  {hasDiscount && (
+                    <span className="admin-discount-badge">
+                      {discountLabel}
+                    </span>
+                  )}
+                </span>
+
+                <span>
+                  {product.price.toLocaleString()} ETB
+                </span>
+
+                <span>{product.status}</span>
+
+                <ProductActions product={product} />
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </>
     </AdminRoute>
