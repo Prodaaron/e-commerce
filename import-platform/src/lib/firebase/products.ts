@@ -9,7 +9,6 @@ import {
   updateDoc,
   orderBy,
   serverTimestamp,
-  Timestamp,
 } from "firebase/firestore";
 
 import { db } from "./config";
@@ -40,14 +39,14 @@ function fromFirestore(doc: any): Product {
 
     createdAt: data.createdAt?.toDate?.() ?? new Date(),
     updatedAt: data.updatedAt?.toDate?.() ?? new Date(),
-  };
-}
 
-function toFirestore(product: Partial<Product>) {
-  return {
-    ...product,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
+    // ✅ SAFE discount mapping
+    discount: data.discount
+      ? {
+          type: data.discount.type,
+          value: data.discount.value,
+        }
+      : undefined,
   };
 }
 
@@ -62,8 +61,6 @@ export async function getProducts(): Promise<Product[]> {
     orderBy("createdAt", "desc")
   );
 
-  console.log("DB APP:", db.app.options);
-
   const snapshot = await getDocs(q);
 
   return snapshot.docs.map(fromFirestore);
@@ -73,7 +70,9 @@ export async function getProducts(): Promise<Product[]> {
    GET PRODUCT BY SLUG
 ------------------------------ */
 
-export async function getProductBySlug(slug?: string): Promise<Product | null> {
+export async function getProductBySlug(
+  slug?: string
+): Promise<Product | null> {
   if (!slug || typeof slug !== "string") {
     console.warn("getProductBySlug called with invalid slug:", slug);
     return null;
@@ -91,6 +90,7 @@ export async function getProductBySlug(slug?: string): Promise<Product | null> {
 
   return fromFirestore(snapshot.docs[0]);
 }
+
 /* -----------------------------
    CREATE PRODUCT (ADMIN ONLY)
 ------------------------------ */
@@ -98,14 +98,11 @@ export async function getProductBySlug(slug?: string): Promise<Product | null> {
 export async function createProduct(
   product: Omit<Product, "id" | "createdAt" | "updatedAt">
 ) {
-  const ref = await addDoc(
-    collection(db, "products"),
-    {
-      ...product,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    }
-  );
+  const ref = await addDoc(collection(db, "products"), {
+    ...product,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
 
   return ref.id;
 }
@@ -152,15 +149,14 @@ export async function restoreProduct(id: string) {
   });
 }
 
-export async function getAdminProducts(): Promise<Product[]> {
-  const snapshot = await getDocs(
-    collection(db, "products")
-  );
+/* -----------------------------
+   ADMIN PRODUCTS
+------------------------------ */
 
-  console.log(
-    "ADMIN SNAPSHOT SIZE:",
-    snapshot.size
-  );
+export async function getAdminProducts(): Promise<Product[]> {
+  const snapshot = await getDocs(collection(db, "products"));
+
+  console.log("ADMIN SNAPSHOT SIZE:", snapshot.size);
 
   console.log(
     "ADMIN DOCS:",

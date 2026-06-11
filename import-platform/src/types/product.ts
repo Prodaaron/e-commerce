@@ -20,4 +20,9 @@ export interface Product {
 
   createdAt: Date;
   updatedAt: Date;
+
+  discount?: {
+    type: "percent" | "fixed";
+    value: number;
+  };
 }
