@@ -5,13 +5,17 @@ import { notFound } from "next/navigation";
 export default async function ProductDetailsPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const product = await getProductBySlug(params.slug);
+  const { slug } = await params;
 
-  if (!product) {
-    return notFound();
-  }
+  console.log("RAW SLUG FROM URL:", slug);
+
+  if (!slug) return notFound();
+
+  const product = await getProductBySlug(slug);
+
+  if (!product) return notFound();
 
   return (
     <div className="container section">
@@ -45,7 +49,6 @@ export default async function ProductDetailsPage({
             Order Now
           </button>
 
-          {/* Debug (keep for now) */}
           <p className="product-slug">
             Product ID: {product.slug}
           </p>

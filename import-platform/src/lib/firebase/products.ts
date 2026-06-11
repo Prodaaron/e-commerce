@@ -62,6 +62,8 @@ export async function getProducts(): Promise<Product[]> {
     orderBy("createdAt", "desc")
   );
 
+  console.log("DB APP:", db.app.options);
+
   const snapshot = await getDocs(q);
 
   return snapshot.docs.map(fromFirestore);
@@ -71,9 +73,12 @@ export async function getProducts(): Promise<Product[]> {
    GET PRODUCT BY SLUG
 ------------------------------ */
 
-export async function getProductBySlug(
-  slug: string
-): Promise<Product | null> {
+export async function getProductBySlug(slug?: string): Promise<Product | null> {
+  if (!slug || typeof slug !== "string") {
+    console.warn("getProductBySlug called with invalid slug:", slug);
+    return null;
+  }
+
   const q = query(
     collection(db, "products"),
     where("slug", "==", slug),
@@ -86,7 +91,6 @@ export async function getProductBySlug(
 
   return fromFirestore(snapshot.docs[0]);
 }
-
 /* -----------------------------
    CREATE PRODUCT (ADMIN ONLY)
 ------------------------------ */
@@ -149,7 +153,22 @@ export async function restoreProduct(id: string) {
 }
 
 export async function getAdminProducts(): Promise<Product[]> {
-  const snapshot = await getDocs(collection(db, "products"));
+  const snapshot = await getDocs(
+    collection(db, "products")
+  );
+
+  console.log(
+    "ADMIN SNAPSHOT SIZE:",
+    snapshot.size
+  );
+
+  console.log(
+    "ADMIN DOCS:",
+    snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }))
+  );
 
   return snapshot.docs.map(fromFirestore);
 }

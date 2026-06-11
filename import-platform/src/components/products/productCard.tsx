@@ -7,6 +7,9 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+
+  console.log("PRODUCT IN CARD:", product);
+  console.log("SLUG VALUE:", product.slug);
   return (
     <div className="product-card">
       <img
@@ -24,7 +27,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           {product.price} ETB
         </p>
 
-        <Link href={`/products/${product.slug}`}>
+        <Link href={product.slug ? `/products/${product.slug}` : "#"}>
           <button className="product-button">
             View Product
           </button>
