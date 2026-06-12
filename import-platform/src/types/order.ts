@@ -10,11 +10,21 @@ export type OrderStatus =
   | "cancelled"
   | "refunded";
 
+export interface OrderItem {
+  productId: string;
+  title: string;
+  price: number;
+  quantity: number;
+
+  discount?: {
+    type: "percent" | "fixed";
+    value: number;
+  };
+}
+
 export interface OrderTimelineEvent {
   status: OrderStatus;
-
   createdAt: Date;
-
   updatedBy: string;
 }
 
@@ -23,9 +33,7 @@ export interface Order {
 
   customerId: string;
 
-  productId: string;
-
-  quantity: number;
+  items: OrderItem[];
 
   totalAmount: number;
 

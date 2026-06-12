@@ -13,11 +13,25 @@ const statuses = [
   "Delivered",
 ];
 
+const statusMap: Record<string, string> = {
+  pending_payment: "Pending Payment",
+  payment_verified: "Payment Verified",
+  sourcing: "Sourcing",
+  order_filled: "Order Filled",
+  in_transit: "In Transit",
+  arrived_ethiopia: "Arrived Ethiopia",
+  ready_for_pickup: "Ready for Pickup",
+  delivered: "Delivered",
+};
+
 export default function OrderTimeline({
   currentStatus,
 }: OrderTimelineProps) {
+  const normalizedStatus =
+    statusMap[currentStatus] || "";
+
   const currentIndex =
-    statuses.indexOf(currentStatus);
+    statuses.indexOf(normalizedStatus);
 
   return (
     <div className="order-timeline">

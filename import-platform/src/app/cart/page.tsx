@@ -19,9 +19,32 @@ import {
 import { CartItem } from "@/types/cart";
 import { getFinalPrice } from "@/lib/cart/cart";
 
+import { createOrderFromCart } from "@/lib/orders/createOrderFromCart";
+import { useRouter } from "next/navigation";
+
 export default function CartPage() {
   const [items, setItems] = useState<CartItem[]>([]);
   const [subtotal, setSubtotal] = useState(0);
+
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const handleRequestOrder = async () => {
+    try {
+      setLoading(true);
+
+      const orderId = await createOrderFromCart();
+
+      alert("Order created successfully!");
+
+      router.push("/orders");
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || "Failed to create order");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const loadCart = () => {
     const cart = getCart();
@@ -135,8 +158,12 @@ export default function CartPage() {
               </span>
             </div>
 
-            <button className="buy-button">
-              Proceed to Checkout
+            <button
+              className="buy-button"
+              onClick={handleRequestOrder}
+              disabled={loading}
+            >
+              {loading ? "Processing..." : "Request Order"}
             </button>
           </div>
         </div>
