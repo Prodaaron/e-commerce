@@ -1,6 +1,7 @@
 import "@/styles/products.css";
 import { getProductBySlug } from "@/lib/firebase/products";
 import { notFound } from "next/navigation";
+import AddToCartButton from "@/components/cart/AddToCartButton";
 
 export default async function ProductDetailsPage({
   params,
@@ -99,6 +100,8 @@ export default async function ProductDetailsPage({
           <button className="buy-button">
             Order Now
           </button>
+
+          <AddToCartButton product={product} />
 
           <p className="product-slug">
             Product ID: {product.slug}

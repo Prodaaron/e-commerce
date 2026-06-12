@@ -4,6 +4,7 @@ import Link from "next/link";
 import "@/styles/navbar.css";
 import { SITE_NAME } from "@/constants/site";
 import { useAuth } from "@/hooks/useAuth";
+import CartIcon from "@/components/common/CartIcon";
 
 export default function Navbar() {
   const { user, logout, loading } = useAuth();
@@ -27,7 +28,9 @@ export default function Navbar() {
 
         {/* User Links */}
         <div className="nav-actions">
-          <Link href="/cart">Cart</Link>
+          <Link href="/cart">
+            <CartIcon />
+          </Link>
           <Link href="/orders">Orders</Link>
           <Link href="/profile">Profile</Link>
         </div>

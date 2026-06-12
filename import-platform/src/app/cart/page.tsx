@@ -1,26 +1,57 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 import "@/styles/cart.css";
 import ProtectedRoute from "@/components/common/ProtectedRoute";
 
-export default function CartPage() {
-  const items = [
-    {
-      id: 1,
-      title: "Dior Sauvage 100ml",
-      price: 8500,
-      quantity: 1,
-    },
-    {
-      id: 2,
-      title: "Nike Air Force 1",
-      price: 7000,
-      quantity: 1,
-    },
-  ];
+import {
+  getCart,
+  getCartTotal,
+} from "@/lib/cart/cart";
 
-  const subtotal = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+import {
+  increaseQuantity,
+  decreaseQuantity,
+  removeFromCart,
+} from "@/lib/cart/cart";
+
+import { CartItem } from "@/types/cart";
+import { getFinalPrice } from "@/lib/cart/cart";
+
+export default function CartPage() {
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [subtotal, setSubtotal] = useState(0);
+
+  const loadCart = () => {
+    const cart = getCart();
+    setItems(cart);
+
+    const total = cart.reduce((sum, item) => {
+      const finalPrice = getFinalPrice(item.price, item.discount);
+      return sum + finalPrice * item.quantity;
+    }, 0);
+
+    setSubtotal(total);
+  };
+
+  useEffect(() => {
+    loadCart();
+  }, []);
+
+  if (items.length === 0) {
+    return (
+      <ProtectedRoute>
+        <div className="container section">
+          <h1 className="page-title">
+            Shopping Cart
+          </h1>
+
+          <p>Your cart is empty.</p>
+        </div>
+      </ProtectedRoute>
+    );
+  }
 
   return (
     <ProtectedRoute>
@@ -30,10 +61,11 @@ export default function CartPage() {
         </h1>
 
         <div className="cart-layout">
+          {/* CART ITEMS */}
           <div className="cart-items">
             {items.map((item) => (
               <div
-                key={item.id}
+                key={item.productId}
                 className="cart-item"
               >
                 <div>
@@ -42,15 +74,57 @@ export default function CartPage() {
                   <p>
                     Quantity: {item.quantity}
                   </p>
+
+                  <div style={{ display: "flex", gap: "8px" }}>
+                    <button
+                      onClick={() => {
+                        increaseQuantity(item.productId);
+                        loadCart();
+                      }}
+                    >
+                      +
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        decreaseQuantity(item.productId);
+                        loadCart();
+                      }}
+                    >
+                      -
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        removeFromCart(item.productId);
+                        loadCart();
+                      }}
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
 
-                <p className="cart-price">
-                  {item.price.toLocaleString()} ETB
-                </p>
+                <div className="cart-price">
+                  {item.discount ? (
+                    <>
+                      <p style={{ textDecoration: "line-through", opacity: 0.6 }}>
+                        {item.price.toLocaleString()} ETB
+                      </p>
+
+                      <p style={{ fontWeight: "bold" }}>
+                        {getFinalPrice(item.price, item.discount).toLocaleString()} ETB
+                      </p>
+                    </>
+                  ) : (
+                    <p>{item.price.toLocaleString()} ETB</p>
+                  )}
+                </div>
               </div>
             ))}
           </div>
 
+          {/* SUMMARY */}
           <div className="cart-summary">
             <h2>Order Summary</h2>
 
