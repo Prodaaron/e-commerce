@@ -11,7 +11,7 @@ export async function createOrderFromCart() {
     throw new Error("User not authenticated");
   }
 
-  const cart = getCart();
+  const cart = getCart(user.uid);
 
   if (cart.length === 0) {
     throw new Error("Cart is empty");
@@ -49,7 +49,7 @@ export async function createOrderFromCart() {
     ],
   });
 
-  clearCart();
+  clearCart(user.uid);
 
   return orderId;
 }

@@ -22,6 +22,8 @@ import { getFinalPrice } from "@/lib/cart/cart";
 import { createOrderFromCart } from "@/lib/orders/createOrderFromCart";
 import { useRouter } from "next/navigation";
 
+import { auth } from "@/lib/firebase/config";
+
 export default function CartPage() {
   const [items, setItems] = useState<CartItem[]>([]);
   const [subtotal, setSubtotal] = useState(0);
@@ -47,7 +49,15 @@ export default function CartPage() {
   };
 
   const loadCart = () => {
-    const cart = getCart();
+    const user = auth.currentUser;
+
+    if (!user) {
+      setItems([]);
+      setSubtotal(0);
+      return;
+    }
+
+    const cart = getCart(user.uid);
     setItems(cart);
 
     const total = cart.reduce((sum, item) => {
@@ -101,7 +111,10 @@ export default function CartPage() {
                   <div style={{ display: "flex", gap: "8px" }}>
                     <button
                       onClick={() => {
-                        increaseQuantity(item.productId);
+                        increaseQuantity(
+                        item.productId,
+                        auth.currentUser?.uid
+                      );
                         loadCart();
                       }}
                     >
@@ -110,7 +123,10 @@ export default function CartPage() {
 
                     <button
                       onClick={() => {
-                        decreaseQuantity(item.productId);
+                        decreaseQuantity(
+                        item.productId,
+                        auth.currentUser?.uid
+                      );
                         loadCart();
                       }}
                     >
@@ -119,7 +135,10 @@ export default function CartPage() {
 
                     <button
                       onClick={() => {
-                        removeFromCart(item.productId);
+                        removeFromCart(
+                        item.productId,
+                        auth.currentUser?.uid
+                      );
                         loadCart();
                       }}
                     >

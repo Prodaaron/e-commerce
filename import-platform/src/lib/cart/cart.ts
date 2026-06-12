@@ -1,32 +1,50 @@
 import { CartItem } from "@/types/cart";
+
 const CART_EVENT = "cart_updated";
 
+/**
+ * Emit event so UI (cart icon, pages) updates instantly
+ */
 export function emitCartUpdate() {
   window.dispatchEvent(new Event(CART_EVENT));
 }
 
-const CART_KEY = "arosa-cart";
+/**
+ * USER-SAFE CART KEY
+ * - Each user has their own cart
+ * - Falls back to guest cart if no user
+ */
+function getCartKey(userId?: string) {
+  return userId ? `arosa-cart_${userId}` : "arosa-cart";
+}
 
-export function getCart(): CartItem[] {
-  if (typeof window === "undefined") {
-    return [];
-  }
+/**
+ * GET CART
+ */
+export function getCart(userId?: string): CartItem[] {
+  if (typeof window === "undefined") return [];
 
-  const cart = localStorage.getItem(CART_KEY);
+  const cart = localStorage.getItem(getCartKey(userId));
 
-  if (!cart) {
-    return [];
-  }
+  if (!cart) return [];
 
   return JSON.parse(cart);
 }
 
-export function saveCart(cart: CartItem[]) {
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+/**
+ * SAVE CART
+ */
+export function saveCart(cart: CartItem[], userId?: string) {
+  localStorage.setItem(getCartKey(userId), JSON.stringify(cart));
 }
 
-export function addToCart(item: CartItem) {
-  const cart = getCart();
+/**
+ * ADD TO CART
+ */
+export function addToCart(
+  item: CartItem & { userId?: string }
+) {
+  const cart = getCart(item.userId);
 
   const existingItem = cart.find(
     (cartItem) => cartItem.productId === item.productId
@@ -38,64 +56,72 @@ export function addToCart(item: CartItem) {
     cart.push(item);
   }
 
-  saveCart(cart);
+  saveCart(cart, item.userId);
   emitCartUpdate();
 }
 
-export function removeFromCart(productId: string) {
-  const updatedCart = getCart().filter(
+/**
+ * REMOVE ITEM
+ */
+export function removeFromCart(productId: string, userId?: string) {
+  const updatedCart = getCart(userId).filter(
     (item) => item.productId !== productId
   );
 
-  saveCart(updatedCart);
+  saveCart(updatedCart, userId);
   emitCartUpdate();
 }
 
-export function increaseQuantity(productId: string) {
-  const cart = getCart();
+/**
+ * INCREASE QUANTITY
+ */
+export function increaseQuantity(productId: string, userId?: string) {
+  const cart = getCart(userId);
 
-  const item = cart.find(
-    (item) => item.productId === productId
-  );
+  const item = cart.find((item) => item.productId === productId);
 
   if (!item) return;
 
   item.quantity += 1;
 
-  saveCart(cart);
+  saveCart(cart, userId);
   emitCartUpdate();
 }
 
-export function decreaseQuantity(productId: string) {
-  const cart = getCart();
+/**
+ * DECREASE QUANTITY
+ */
+export function decreaseQuantity(productId: string, userId?: string) {
+  const cart = getCart(userId);
 
-  const item = cart.find(
-    (item) => item.productId === productId
-  );
+  const item = cart.find((item) => item.productId === productId);
 
   if (!item) return;
 
   item.quantity -= 1;
 
   if (item.quantity <= 0) {
-    const updated = cart.filter(
-      (i) => i.productId !== productId
-    );
-
-    saveCart(updated);
+    const updated = cart.filter((i) => i.productId !== productId);
+    saveCart(updated, userId);
     emitCartUpdate();
     return;
   }
 
-  saveCart(cart);
+  saveCart(cart, userId);
   emitCartUpdate();
 }
 
-export function clearCart() {
-  saveCart([]);
+/**
+ * CLEAR CART
+ */
+export function clearCart(userId?: string) {
+  saveCart([], userId);
   emitCartUpdate();
 }
 
+/**
+ * DISCOUNT CALCULATION
+ */
 export function getDiscountedPrice(
   price: number,
   discount?: {
@@ -103,9 +129,7 @@ export function getDiscountedPrice(
     value: number;
   }
 ) {
-  if (!discount) {
-    return price;
-  }
+  if (!discount) return price;
 
   if (discount.type === "percent") {
     return price - (price * discount.value) / 100;
@@ -114,8 +138,11 @@ export function getDiscountedPrice(
   return Math.max(0, price - discount.value);
 }
 
-export function getCartTotal() {
-  const cart = getCart();
+/**
+ * CART TOTAL
+ */
+export function getCartTotal(userId?: string) {
+  const cart = getCart(userId);
 
   return cart.reduce((total, item) => {
     const discountedPrice = getDiscountedPrice(
@@ -127,6 +154,9 @@ export function getCartTotal() {
   }, 0);
 }
 
+/**
+ * FINAL PRICE (single product)
+ */
 export function getFinalPrice(
   price: number,
   discount?: {
