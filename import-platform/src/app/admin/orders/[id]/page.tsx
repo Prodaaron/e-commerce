@@ -98,6 +98,20 @@ export default function AdminOrderDetailsPage() {
           <p>Customer ID: {order.customerId}</p>
         </div>
 
+        {order.deliveryInfo && (
+          <div className="admin-card">
+            <h3>Delivery Details</h3>
+            <p>Name: {order.deliveryInfo.fullName}</p>
+            <p>Phone: {order.deliveryInfo.phone}</p>
+            <p>City: {order.deliveryInfo.city}</p>
+            <p>Address: {order.deliveryInfo.address}</p>
+
+            {order.deliveryInfo.notes && (
+              <p>Notes: {order.deliveryInfo.notes}</p>
+            )}
+          </div>
+        )}
+
         {/* PRODUCTS */}
         <div className="admin-card">
           <h3>Products</h3>

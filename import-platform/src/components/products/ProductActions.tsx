@@ -2,8 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase/config";
-import { getCart, clearCart } from "@/lib/cart/cart";
-import { createOrder } from "@/lib/firebase/createOrder";
+import { addToCart } from "@/lib/cart/cart";
 import AddToCartButton from "@/components/cart/AddToCartButton";
 import { Product } from "@/types/product";
 
@@ -23,23 +22,18 @@ export default function ProductActions({ product }: Props) {
       return;
     }
 
-    const cart = getCart(user.uid);
+    addToCart({
+      productId: product.id,
+      title: product.title,
+      slug: product.slug,
+      image: product.images[0] || "",
+      price: product.price,
+      discount: product.discount,
+      quantity: 1,
+      userId: user.uid,
+    });
 
-    if (cart.length === 0) {
-      alert("Cart is empty");
-      return;
-    }
-
-    try {
-      const orderId = await createOrder(cart);
-
-      clearCart(user.uid);
-
-      router.push(`/orders/${orderId}`);
-    } catch (err) {
-      console.error(err);
-      alert("Failed to create order");
-    }
+    router.push("/cart");
   };
 
   return (

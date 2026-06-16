@@ -30,16 +30,50 @@ export default function CartPage() {
 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [deliveryInfo, setDeliveryInfo] = useState({
+    fullName: "",
+    phone: "",
+    city: "",
+    address: "",
+    notes: "",
+  });
+
+  const handleDeliveryChange = (
+    field: keyof typeof deliveryInfo,
+    value: string
+  ) => {
+    setDeliveryInfo((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
   const handleRequestOrder = async () => {
     try {
       setLoading(true);
 
-      const orderId = await createOrderFromCart();
+      const fullName = deliveryInfo.fullName.trim();
+      const phone = deliveryInfo.phone.trim();
+      const city = deliveryInfo.city.trim();
+      const address = deliveryInfo.address.trim();
+      const notes = deliveryInfo.notes.trim();
+
+      if (!fullName || !phone || !city || !address) {
+        alert("Please fill in your delivery details");
+        return;
+      }
+
+      const orderId = await createOrderFromCart({
+        fullName,
+        phone,
+        city,
+        address,
+        ...(notes ? { notes } : {}),
+      });
 
       alert("Order created successfully!");
 
-      router.push("/orders");
+      router.push(`/orders/${orderId}`);
     } catch (err: any) {
       console.error(err);
       alert(err.message || "Failed to create order");
@@ -175,6 +209,70 @@ export default function CartPage() {
               <span>
                 {subtotal.toLocaleString()} ETB
               </span>
+            </div>
+
+            <div className="checkout-form">
+              <h3>Delivery Details</h3>
+
+              <label>
+                Full Name
+                <input
+                  type="text"
+                  value={deliveryInfo.fullName}
+                  onChange={(e) =>
+                    handleDeliveryChange("fullName", e.target.value)
+                  }
+                  placeholder="Your full name"
+                />
+              </label>
+
+              <label>
+                Phone Number
+                <input
+                  type="tel"
+                  value={deliveryInfo.phone}
+                  onChange={(e) =>
+                    handleDeliveryChange("phone", e.target.value)
+                  }
+                  placeholder="+251..."
+                />
+              </label>
+
+              <label>
+                City
+                <input
+                  type="text"
+                  value={deliveryInfo.city}
+                  onChange={(e) =>
+                    handleDeliveryChange("city", e.target.value)
+                  }
+                  placeholder="Addis Ababa"
+                />
+              </label>
+
+              <label>
+                Delivery Address
+                <textarea
+                  value={deliveryInfo.address}
+                  onChange={(e) =>
+                    handleDeliveryChange("address", e.target.value)
+                  }
+                  placeholder="Area, building, street, or pickup details"
+                  rows={3}
+                />
+              </label>
+
+              <label>
+                Notes
+                <textarea
+                  value={deliveryInfo.notes}
+                  onChange={(e) =>
+                    handleDeliveryChange("notes", e.target.value)
+                  }
+                  placeholder="Optional delivery instructions"
+                  rows={3}
+                />
+              </label>
             </div>
 
             <button

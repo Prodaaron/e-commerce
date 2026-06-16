@@ -1,9 +1,11 @@
 import { getAuth } from "firebase/auth";
 import { createOrder } from "@/lib/firebase/order";
 import { getCart, clearCart } from "@/lib/cart/cart";
-import { OrderItem } from "@/types/order";
+import { OrderDeliveryInfo, OrderItem } from "@/types/order";
 
-export async function createOrderFromCart() {
+export async function createOrderFromCart(
+  deliveryInfo?: OrderDeliveryInfo
+) {
   const auth = getAuth();
   const user = auth.currentUser;
 
@@ -40,6 +42,7 @@ export async function createOrderFromCart() {
     items,
     totalAmount,
     status: "pending_payment",
+    ...(deliveryInfo ? { deliveryInfo } : {}),
     timeline: [
       {
         status: "pending_payment",

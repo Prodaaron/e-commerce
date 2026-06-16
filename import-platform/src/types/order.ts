@@ -28,6 +28,14 @@ export interface OrderTimelineEvent {
   updatedBy: string;
 }
 
+export interface OrderDeliveryInfo {
+  fullName: string;
+  phone: string;
+  city: string;
+  address: string;
+  notes?: string;
+}
+
 export interface Order {
   id: string;
 
@@ -40,6 +48,8 @@ export interface Order {
   status: OrderStatus;
 
   paymentId?: string;
+
+  deliveryInfo?: OrderDeliveryInfo;
 
   estimatedDelivery?: string;
 

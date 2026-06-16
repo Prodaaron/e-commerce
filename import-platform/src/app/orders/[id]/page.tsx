@@ -70,6 +70,21 @@ export default function OrderDetailsPage() {
           Estimated Delivery: {order.estimatedDelivery || "TBD"}
         </p>
 
+        {order.deliveryInfo && (
+          <div className="order-details-card">
+            <h3>Delivery Details</h3>
+
+            <p>Name: {order.deliveryInfo.fullName}</p>
+            <p>Phone: {order.deliveryInfo.phone}</p>
+            <p>City: {order.deliveryInfo.city}</p>
+            <p>Address: {order.deliveryInfo.address}</p>
+
+            {order.deliveryInfo.notes && (
+              <p>Notes: {order.deliveryInfo.notes}</p>
+            )}
+          </div>
+        )}
+
         <p>
           Total: {order.totalAmount.toLocaleString()} ETB
         </p>
