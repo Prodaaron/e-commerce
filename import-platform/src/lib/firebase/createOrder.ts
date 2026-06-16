@@ -1,7 +1,7 @@
 import { db, auth } from "@/lib/firebase/config";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { CartItem } from "@/types/cart";
-import { OrderStatus } from "@/types/order";
+import { OrderItem, OrderStatus } from "@/types/order";
 
 export async function createOrder(items: CartItem[]) {
   const user = auth.currentUser;
@@ -21,10 +21,18 @@ export async function createOrder(items: CartItem[]) {
     return sum + price * item.quantity;
   }, 0);
 
+  const orderItems: OrderItem[] = items.map((item) => ({
+    productId: item.productId,
+    title: item.title,
+    price: item.price,
+    quantity: item.quantity,
+    ...(item.discount ? { discount: item.discount } : {}),
+  }));
+
   const order = {
     customerId: user.uid,
 
-    items,
+    items: orderItems,
 
     totalAmount,
 

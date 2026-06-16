@@ -24,7 +24,7 @@ export async function createOrderFromCart(
     title: item.title,
     price: item.price,
     quantity: item.quantity,
-    discount: item.discount,
+    ...(item.discount ? { discount: item.discount } : {}),
   }));
 
   const totalAmount = items.reduce((sum, item) => {
