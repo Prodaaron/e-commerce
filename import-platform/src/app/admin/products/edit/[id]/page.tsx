@@ -1,5 +1,6 @@
 "use client";
 
+import type { ChangeEvent } from "react";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import {
@@ -8,6 +9,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
+import { uploadImageToImageKit } from "@/lib/imagekit/upload";
 
 export default function EditProductPage() {
   const router = useRouter();
@@ -15,6 +17,7 @@ export default function EditProductPage() {
   const id = params.id as string;
 
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const [form, setForm] = useState<any>({
     title: "",
@@ -66,19 +69,54 @@ export default function EditProductPage() {
     }));
   }
 
+  function addImageUrl(url: string) {
+    setForm((prev: any) => ({
+      ...prev,
+      images: prev.images ? `${prev.images}, ${url}` : url,
+    }));
+  }
+
+  async function handleImageUpload(
+    e: ChangeEvent<HTMLInputElement>
+  ) {
+    const files = Array.from(e.target.files || []);
+
+    if (files.length === 0) return;
+
+    setUploading(true);
+
+    try {
+      const urls = await Promise.all(
+        files.map((file) => uploadImageToImageKit(file))
+      );
+
+      urls.forEach(addImageUrl);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to upload image");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  }
+
   async function handleUpdate(e: any) {
     e.preventDefault();
     setLoading(true);
 
     try {
       const ref = doc(db, "products", id);
+      const images = form.images
+        .split(",")
+        .map((i: string) => i.trim())
+        .filter(Boolean);
 
       await updateDoc(ref, {
         title: form.title,
         slug: form.slug,
         description: form.description,
         price: Number(form.price),
-        images: form.images.split(",").map((i: string) => i.trim()),
+        images,
         category: form.category,
         featured: form.featured,
         status: form.status,
@@ -124,8 +162,22 @@ export default function EditProductPage() {
       <input
         name="images"
         value={form.images}
+        placeholder="Image URLs (comma separated)"
         onChange={handleChange}
       />
+
+      <label className="admin-upload-field">
+        Upload Product Images
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={handleImageUpload}
+          disabled={uploading}
+        />
+      </label>
+
+      {uploading && <p>Uploading images...</p>}
 
       <input
         name="category"

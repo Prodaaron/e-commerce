@@ -1,15 +1,18 @@
 "use client";
 
+import type { ChangeEvent } from "react";
 import { useState } from "react";
 import { createProduct } from "@/lib/firebase/products";
 import { useRouter } from "next/navigation";
 import { generateSlug } from "@/utils/generateSlug";
+import { uploadImageToImageKit } from "@/lib/imagekit/upload";
 
 
 export default function CreateProductPage() {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const [form, setForm] = useState({
     title: "",
@@ -33,29 +36,65 @@ export default function CreateProductPage() {
     }));
   }
 
+  function addImageUrl(url: string) {
+    setForm((prev) => ({
+      ...prev,
+      images: prev.images ? `${prev.images}, ${url}` : url,
+    }));
+  }
+
+  async function handleImageUpload(
+    e: ChangeEvent<HTMLInputElement>
+  ) {
+    const files = Array.from(e.target.files || []);
+
+    if (files.length === 0) return;
+
+    setUploading(true);
+
+    try {
+      const urls = await Promise.all(
+        files.map((file) => uploadImageToImageKit(file))
+      );
+
+      urls.forEach(addImageUrl);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to upload image");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  }
+
   async function handleSubmit(e: any) {
     e.preventDefault();
     setLoading(true);
 
     try {
+      const images = form.images
+        .split(",")
+        .map((img) => img.trim())
+        .filter(Boolean);
+
       await createProduct({
         sellerId: "admin",
         title: form.title,
-        slug: generateSlug(form.title), 
+        slug: generateSlug(form.title),
         description: form.description,
         price: Number(form.price),
-        images: form.images.split(",").map((img) => img.trim()),
+        images,
         category: form.category,
         featured: form.featured,
         status: form.status,
-
-        discount:
-          form.discountType === "none"
-            ? undefined
-            : {
+        ...(form.discountType !== "none"
+          ? {
+              discount: {
                 type: form.discountType,
                 value: Number(form.discountValue),
               },
+            }
+          : {}),
       });
 
       router.push("/admin/products");
@@ -97,9 +136,23 @@ export default function CreateProductPage() {
 
       <input
         name="images"
-        placeholder="Images (comma separated)"
+        value={form.images}
+        placeholder="Image URLs (comma separated)"
         onChange={handleChange}
       />
+
+      <label className="admin-upload-field">
+        Upload Product Images
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={handleImageUpload}
+          disabled={uploading}
+        />
+      </label>
+
+      {uploading && <p>Uploading images...</p>}
 
       <input
         name="category"
