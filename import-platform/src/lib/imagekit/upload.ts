@@ -9,6 +9,20 @@ interface ImageKitUploadResponse {
   url: string;
   fileId: string;
   name: string;
+  filePath?: string;
+  size?: number;
+  fileType?: string;
+}
+
+export interface ImageKitUploadedAsset {
+  provider: "imagekit";
+  url: string;
+  fileId: string;
+  path?: string;
+  originalFileName: string;
+  mimeType: string;
+  size: number;
+  uploadedAt: Date;
 }
 
 async function getErrorMessage(response: Response) {
@@ -29,10 +43,10 @@ async function getErrorMessage(response: Response) {
   return response.statusText;
 }
 
-export async function uploadImageToImageKit(
+export async function uploadFileToImageKit(
   file: File,
   folder = "/products"
-) {
+): Promise<ImageKitUploadedAsset> {
   const urlEndpoint = process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT;
 
   if (!urlEndpoint) {
@@ -44,7 +58,11 @@ export async function uploadImageToImageKit(
   if (!authResponse.ok) {
     const message = await getErrorMessage(authResponse);
 
-    throw new Error(message || "Failed to prepare image upload");
+    throw new Error(
+      `ImageKit auth request failed: ${
+        message || "Failed to prepare image upload"
+      }`
+    );
   }
 
   const auth = (await authResponse.json()) as ImageKitAuthResponse;
@@ -69,10 +87,30 @@ export async function uploadImageToImageKit(
   if (!uploadResponse.ok) {
     const message = await getErrorMessage(uploadResponse);
 
-    throw new Error(message || "Image upload failed");
+    throw new Error(
+      `ImageKit upload request failed: ${message || "Image upload failed"}`
+    );
   }
 
   const uploaded = (await uploadResponse.json()) as ImageKitUploadResponse;
+
+  return {
+    provider: "imagekit",
+    url: uploaded.url,
+    fileId: uploaded.fileId,
+    ...(uploaded.filePath ? { path: uploaded.filePath } : {}),
+    originalFileName: uploaded.name || file.name,
+    mimeType: file.type,
+    size: uploaded.size || file.size,
+    uploadedAt: new Date(),
+  };
+}
+
+export async function uploadImageToImageKit(
+  file: File,
+  folder = "/products"
+) {
+  const uploaded = await uploadFileToImageKit(file, folder);
 
   return uploaded.url;
 }

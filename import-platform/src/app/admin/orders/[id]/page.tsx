@@ -1,36 +1,45 @@
 "use client";
 
+import type { ChangeEvent } from "react";
 import { useEffect, useState } from "react";
-import "@/styles/admin.css";
-
-import AdminRoute from "@/components/common/AdminRoute";
-import { getOrderById } from "@/lib/firebase/getOrderById";
-import { updateOrderStatus } from "@/lib/firebase/adminOrder";
-
-import { Order, OrderStatus } from "@/types/order";
 import { useParams } from "next/navigation";
 
-export default function AdminOrderDetailsPage() {
+import OrderTimeline from "@/components/orders/OrderTimeline";
+import "@/styles/orders.css";
+import ProtectedRoute from "@/components/common/ProtectedRoute";
+
+import { auth } from "@/lib/firebase/config";
+import { getOrderById } from "@/lib/firebase/getOrderById";
+import {
+  createPaymentProof,
+  getPaymentByOrderId,
+  getPaymentProofProviderLabel,
+  getPaymentProofUrl,
+} from "@/lib/firebase/payments";
+import { uploadFileToImageKit } from "@/lib/imagekit/upload";
+import { Order } from "@/types/order";
+import { Payment } from "@/types/payment";
+
+export default function OrderDetailsPage() {
   const { id } = useParams<{ id: string }>();
 
   const [order, setOrder] = useState<Order | null>(null);
-  const [status, setStatus] = useState<OrderStatus | "">("");
+  const [payment, setPayment] = useState<Payment | null>(null);
   const [loading, setLoading] = useState(true);
+  const [uploadingPayment, setUploadingPayment] = useState(false);
 
-  // =========================
-  // FETCH ORDER
-  // =========================
   useEffect(() => {
     const fetchOrder = async () => {
       try {
         const data = await getOrderById(id);
-
-        if (!data) return;
-
         setOrder(data);
-        setStatus(data.status);
+
+        const paymentData = data
+          ? await getPaymentByOrderId(id, data.customerId)
+          : null;
+        setPayment(paymentData);
       } catch (err) {
-        console.error("Failed to load order:", err);
+        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -39,68 +48,94 @@ export default function AdminOrderDetailsPage() {
     fetchOrder();
   }, [id]);
 
-  // =========================
-  // SAVE STATUS
-  // =========================
-  const handleSave = async () => {
-    if (!order || !status) return;
+  const handlePaymentUpload = async (
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    const user = auth.currentUser;
+
+    if (!file || !order || !user) return;
+
+    setUploadingPayment(true);
 
     try {
-      await updateOrderStatus(order.id, status as OrderStatus, "admin");
+      const proof = await uploadFileToImageKit(
+        file,
+        "/payments"
+      );
 
-      setOrder({
-        ...order,
-        status: status as OrderStatus,
+      const paymentId = await createPaymentProof({
+        orderId: order.id,
+        customerId: user.uid,
+        amount: order.totalAmount,
+        proof,
       });
 
-      alert("Status updated successfully");
-    } catch (err) {
-      console.error("Failed to update status:", err);
+      setPayment({
+        id: paymentId,
+        orderId: order.id,
+        customerId: user.uid,
+        amount: order.totalAmount,
+        proof,
+        proofImageUrl: proof.url,
+        status: "pending",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+
+      alert("Payment proof uploaded successfully");
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || "Failed to upload payment proof");
+    } finally {
+      setUploadingPayment(false);
+      e.target.value = "";
     }
   };
 
-  // =========================
-  // LOADING
-  // =========================
   if (loading) {
     return (
-      <AdminRoute>
+      <ProtectedRoute>
         <div className="container section">
-          <h1>Loading order...</h1>
+          <h1>Loading...</h1>
         </div>
-      </AdminRoute>
+      </ProtectedRoute>
     );
   }
 
   if (!order) {
     return (
-      <AdminRoute>
+      <ProtectedRoute>
         <div className="container section">
           <h1>Order not found</h1>
         </div>
-      </AdminRoute>
+      </ProtectedRoute>
     );
   }
 
-  // =========================
-  // UI
-  // =========================
   return (
-    <AdminRoute>
-      <>
-        <div className="admin-page-header">
-          <h1>Order #{order.id}</h1>
+    <ProtectedRoute>
+      <div className="container section">
+        <h1>Order #{order.id}</h1>
+
+        <div style={{ marginBottom: "20px" }}>
+          {order.items?.map((item) => (
+            <div key={item.productId}>
+              <p>
+                {item.title} × {item.quantity}
+              </p>
+            </div>
+          ))}
         </div>
 
-        {/* CUSTOMER INFO */}
-        <div className="admin-card">
-          <h3>Customer Information</h3>
-          <p>Customer ID: {order.customerId}</p>
-        </div>
+        <p>
+          Estimated Delivery: {order.estimatedDelivery || "TBD"}
+        </p>
 
         {order.deliveryInfo && (
-          <div className="admin-card">
+          <div className="order-details-card">
             <h3>Delivery Details</h3>
+
             <p>Name: {order.deliveryInfo.fullName}</p>
             <p>Phone: {order.deliveryInfo.phone}</p>
             <p>City: {order.deliveryInfo.city}</p>
@@ -112,48 +147,62 @@ export default function AdminOrderDetailsPage() {
           </div>
         )}
 
-        {/* PRODUCTS */}
-        <div className="admin-card">
-          <h3>Products</h3>
+        <p>
+          Total: {order.totalAmount.toLocaleString()} ETB
+        </p>
 
-          {order.items?.map((item) => (
-            <p key={item.productId}>
-              {item.title} × {item.quantity}
-            </p>
-          ))}
+        <div className="order-details-card">
+          <h3>Payment Proof</h3>
+
+          {payment ? (
+            <>
+              <p>Status: {payment.status}</p>
+              <p>
+                Stored With: {getPaymentProofProviderLabel(payment)}
+              </p>
+
+              {getPaymentProofUrl(payment) ? (
+                <a
+                  href={getPaymentProofUrl(payment)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="order-link"
+                >
+                  View uploaded proof
+                </a>
+              ) : (
+                <p>
+                  Proof is recorded, but no public viewing link is
+                  available.
+                </p>
+              )}
+            </>
+          ) : order.status === "pending_payment" ? (
+            <>
+              <p>
+                Upload your payment screenshot so the admin can verify
+                your order.
+              </p>
+
+              <label className="payment-upload-field">
+                Upload Payment Proof
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePaymentUpload}
+                  disabled={uploadingPayment}
+                />
+              </label>
+
+              {uploadingPayment && <p>Uploading payment proof...</p>}
+            </>
+          ) : (
+            <p>No payment proof has been uploaded for this order.</p>
+          )}
         </div>
 
-        {/* STATUS UPDATE */}
-        <div className="admin-card">
-          <h3>Update Status</h3>
-
-          <select
-            className="admin-select"
-            value={status}
-            onChange={(e) =>
-              setStatus(e.target.value as OrderStatus)
-            }
-          >
-            <option value="pending_payment">Pending Payment</option>
-            <option value="payment_verified">Payment Verified</option>
-            <option value="sourcing">Sourcing</option>
-            <option value="order_filled">Order Filled</option>
-            <option value="in_transit">In Transit</option>
-            <option value="arrived_ethiopia">Arrived Ethiopia</option>
-            <option value="ready_for_pickup">Ready for Pickup</option>
-            <option value="delivered">Delivered</option>
-            <option value="cancelled">Cancelled</option>
-            <option value="refunded">Refunded</option>
-          </select>
-
-          <button
-            className="admin-primary-button"
-            onClick={handleSave}
-          >
-            Save Status
-          </button>
-        </div>
-      </>
-    </AdminRoute>
+        <OrderTimeline currentStatus={order.status} />
+      </div>
+    </ProtectedRoute>
   );
 }
