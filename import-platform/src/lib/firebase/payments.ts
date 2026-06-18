@@ -3,6 +3,7 @@ import {
   collection,
   doc,
   getDocs,
+  orderBy,
   query,
   serverTimestamp,
   updateDoc,
@@ -99,6 +100,33 @@ export async function getPaymentByOrderId(
           }
         : undefined),
   } as Payment;
+}
+
+export async function getAllPayments(): Promise<Payment[]> {
+  const q = query(
+    collection(db, "payments"),
+    orderBy("createdAt", "desc")
+  );
+
+  const snapshot = await getDocs(q);
+
+  return snapshot.docs.map((doc) => {
+    const data = doc.data();
+
+    return {
+      id: doc.id,
+      ...data,
+      proof:
+        data.proof ||
+        (data.proofImageUrl
+          ? {
+              provider: "external",
+              url: data.proofImageUrl,
+              uploadedAt: data.createdAt?.toDate?.() ?? new Date(),
+            }
+          : undefined),
+    } as Payment;
+  });
 }
 
 export async function updatePaymentStatus(

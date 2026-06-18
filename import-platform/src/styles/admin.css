@@ -159,6 +159,16 @@
     1fr;
 }
 
+.admin-payments-grid {
+  grid-template-columns:
+    1.2fr
+    1.5fr
+    1fr
+    1fr
+    1fr
+    1.4fr;
+}
+
 .status-badge {
   display: inline-block;
 
