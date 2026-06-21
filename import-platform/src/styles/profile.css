@@ -50,10 +50,45 @@
   display: flex;
 
   justify-content: space-between;
+  gap: 1rem;
 
   padding: 1rem 0;
 
   border-bottom: 1px solid var(--border);
+}
+
+.profile-row span:last-child {
+  text-align: right;
+  font-weight: 600;
+}
+
+.profile-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  color: var(--muted);
+
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.profile-field input {
+  width: 100%;
+
+  padding: 0.9rem 1rem;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  color: var(--foreground);
+  font: inherit;
+}
+
+.profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .profile-button {
@@ -64,6 +99,23 @@
   background: var(--primary);
 
   color: white;
+
+  border-radius: 10px;
+
+  font-weight: 600;
+}
+
+.profile-actions .profile-button,
+.profile-actions .profile-secondary-button {
+  margin-top: 1rem;
+}
+
+.profile-secondary-button {
+  padding: 1rem 1.5rem;
+
+  background: #f3f4f6;
+
+  color: var(--foreground);
 
   border-radius: 10px;
 

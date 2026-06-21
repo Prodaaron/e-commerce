@@ -156,15 +156,5 @@ export async function restoreProduct(id: string) {
 export async function getAdminProducts(): Promise<Product[]> {
   const snapshot = await getDocs(collection(db, "products"));
 
-  console.log("ADMIN SNAPSHOT SIZE:", snapshot.size);
-
-  console.log(
-    "ADMIN DOCS:",
-    snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }))
-  );
-
   return snapshot.docs.map(fromFirestore);
 }
