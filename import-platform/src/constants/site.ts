@@ -1,1 +1,1 @@
-export const SITE_NAME = "ImportHub";
+export const SITE_NAME = "AROSA";
